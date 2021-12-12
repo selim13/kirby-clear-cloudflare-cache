@@ -9,8 +9,7 @@ use TheStreamable\ClearCloudflareCache\CloudflareCache;
 Kirby::plugin('thestreamable/clearcloudflarecache', [
     'options' => [
         'cloudflareZoneID'      => null,
-        'cloudflareEmail'       => null,
-        'cloudflareAPIKey'      => null,
+        'cloudflareToken'       => null,
         'dependantUrlsForPage'  => function ($hook, $page, $oldPage = null) {
             return $oldPage ? [$page->url(), $oldPage->url()] : $page->url();
         },
@@ -20,7 +19,7 @@ Kirby::plugin('thestreamable/clearcloudflarecache', [
                 'file.create:after',
                 'file.update:after',
             ]);
-            
+
             $urls = $clearParentOnly ? [$file->parent()->url()] : [$file->url(), $file->parent()->url()];
             if ($oldFile && !$clearParentOnly) {
                 $urls[] = $oldFile->url();
