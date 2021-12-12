@@ -26,12 +26,28 @@ class CloudflareCache
         }
     }
 
-    public static function handleSiteHook($hook, $site, $oldSite = null)
+    public static function handleSiteHook()
     {
-        $callback = option('thestreamable.clearcloudflarecache.dependantUrlsForSite');
-        if ($callback && is_callable($callback)) {
-            static::purgeURLs($callback($hook, $site, $oldSite));
+        static::purgeAll();
+    }
+
+    public static function purgeAll()
+    {
+        $cloudflareZone = option('thestreamable.clearcloudflarecache.cloudflareZoneID');
+        $cloudflareToken = option('thestreamable.clearcloudflarecache.cloudflareToken');
+        if (empty($cloudflareZone || empty($cloudflareToken))) {
+            return;
         }
+
+        $r = Remote::post('https://api.cloudflare.com/client/v4/zones/' . $cloudflareZone . '/purge_cache', [
+            'headers' => [
+                'Authorization: Bearer ' . $cloudflareToken,
+                'Content-Type: application/json',
+            ],
+            'data' => json_encode([
+                'purge_everything' => true,
+            ]),
+        ]);
     }
 
     public static function purgeURLs($pagesOrURLs)

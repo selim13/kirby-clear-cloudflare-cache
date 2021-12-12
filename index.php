@@ -27,9 +27,6 @@ Kirby::plugin('thestreamable/clearcloudflarecache', [
             }
             return $urls;
         },
-        'dependantUrlsForSite'  => function ($hook, $site, $oldSite = null) {
-            return $site->url();
-        },
     ],
     'hooks' => [
         // Page
@@ -80,7 +77,7 @@ Kirby::plugin('thestreamable/clearcloudflarecache', [
 
         // Site
         'site.update:after' => function ($newSite, $oldSite) {
-            CloudflareCache::handleSiteHook('site.update:after', $newSite);
+            CloudflareCache::handleSiteHook();
         },
     ],
 ]);
